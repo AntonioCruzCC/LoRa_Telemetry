@@ -1,6 +1,6 @@
 # lora_telemetry
 
-A new Flutter project.
+A project to show data collected from LoRa connected power meters.
 
 ## Getting Started
 
