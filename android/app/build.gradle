@@ -58,6 +58,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [mapsApiKey: mapsApiKey, applicationName: "android.app.Application"]
+        multiDexEnabled true
     }
 
     buildTypes {
