@@ -20,8 +20,20 @@ class MyApp extends StatelessWidget {
       title: 'LoRa Telemetry',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(50),
+            ),
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          elevation: 50,
+        ),
       ),
-      home: const MapPage(),
+      home: const Scaffold(
+        body: MapPage(),
+      ),
     );
   }
 }

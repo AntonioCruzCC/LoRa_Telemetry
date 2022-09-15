@@ -27,9 +27,11 @@ class FirestoreHandler {
     return querySnapshot.docs
         .map(
           (QueryDocumentSnapshot<PowerMeter> powerMeterDoc) => Marker(
-            markerId: MarkerId(powerMeterDoc.data().id),
-            position: powerMeterDoc.data().position,
-          ),
+              markerId: MarkerId(powerMeterDoc.data().id),
+              position: powerMeterDoc.data().geolocation,
+              onTap: () async {
+                print((await powerMeterDoc.data().district).name);
+              }),
         )
         .toSet();
   }

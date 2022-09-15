@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lora_telemetry/handlers/firestore_handler.dart';
 import 'package:lora_telemetry/handlers/location_handler.dart';
+import 'package:lora_telemetry/widgets/filter.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -45,7 +46,14 @@ class _MapPageState extends State<MapPage> {
           title: const Text("LoRa Telemetry"),
         ),
         floatingActionButton: FloatingActionButton(
-            onPressed: () {}, child: const Icon(Icons.filter_alt)),
+          onPressed: () {
+            showBottomSheet(
+              context: context,
+              builder: ((BuildContext context) => const Filter()),
+            );
+          },
+          child: const Icon(Icons.filter_alt),
+        ),
         body: FutureBuilder<CameraPosition>(
           future: getCameraPosition(),
           builder: (context, snapshot) {
