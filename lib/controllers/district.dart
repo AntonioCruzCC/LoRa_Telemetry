@@ -15,4 +15,12 @@ class District {
       'Name': name,
     };
   }
+
+  @override
+  bool operator ==(covariant District other) {
+    return other.id == id && other.name == name;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name);
 }

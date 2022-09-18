@@ -31,8 +31,8 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  setInitialMarkers() async {
-    Set<Marker> markersToSet = await _firestoreHandler.getAllMeters();
+  setMarkers() async {
+    Set<Marker> markersToSet = await _firestoreHandler.getFilteredMeters();
     setState(() {
       markers = markersToSet;
     });
@@ -40,17 +40,17 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    setInitialMarkers();
+    setMarkers();
     return Scaffold(
         appBar: AppBar(
           title: const Text("LoRa Telemetry"),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            showBottomSheet(
+            showModalBottomSheet(
               context: context,
               builder: ((BuildContext context) => const Filter()),
-            );
+            ).then((value) => setMarkers());
           },
           child: const Icon(Icons.filter_alt),
         ),
