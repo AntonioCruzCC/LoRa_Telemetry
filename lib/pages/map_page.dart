@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:lora_telemetry/handlers/firestore_handler.dart';
 import 'package:lora_telemetry/handlers/location_handler.dart';
 import 'package:lora_telemetry/widgets/filter.dart';
@@ -31,8 +32,10 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  setMarkers() async {
-    Set<Marker> markersToSet = await _firestoreHandler.getFilteredMeters();
+  setMarkers(BuildContext context) async {
+    Set<Marker> markersToSet = await _firestoreHandler.getFilteredMeters(
+      context,
+    );
     setState(() {
       markers = markersToSet;
     });
@@ -40,7 +43,7 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    setMarkers();
+    setMarkers(context);
     return Scaffold(
         appBar: AppBar(
           title: const Text("LoRa Telemetry"),
@@ -50,7 +53,9 @@ class _MapPageState extends State<MapPage> {
             showModalBottomSheet(
               context: context,
               builder: ((BuildContext context) => const Filter()),
-            ).then((value) => setMarkers());
+            ).then(
+              (value) => setMarkers(context),
+            );
           },
           child: const Icon(Icons.filter_alt),
         ),
@@ -70,8 +75,13 @@ class _MapPageState extends State<MapPage> {
                 markers: markers,
               );
             } else {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return Center(
+                child: LocationHandler().serviceEnabled != null &&
+                        !LocationHandler().serviceEnabled!
+                    ? const Text(
+                        'Ative a localização do seu dispositivo!',
+                      )
+                    : const CircularProgressIndicator(),
               );
             }
           },

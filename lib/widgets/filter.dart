@@ -11,10 +11,9 @@ class Filter extends StatefulWidget {
 class _FilterState extends State<Filter> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.7,
       width: MediaQuery.of(context).size.width,
-      color: Colors.blueGrey.shade100,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50.0),
         child: Column(
@@ -25,7 +24,7 @@ class _FilterState extends State<Filter> {
               height: 50,
               child: Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
+                  width: MediaQuery.of(context).size.width * 0.2,
                   height: 5,
                   child: Container(
                     decoration: BoxDecoration(

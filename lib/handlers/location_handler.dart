@@ -5,7 +5,7 @@ class LocationHandler {
   static final LocationHandler _locationSingleton = LocationHandler._internal();
 
   Location location = Location();
-  late bool _serviceEnabled;
+  bool? serviceEnabled;
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
 
@@ -13,16 +13,13 @@ class LocationHandler {
     return _locationSingleton;
   }
 
-  LocationHandler._internal();
+  LocationHandler._internal() {
+    initGeolocation();
+  }
 
   Future<void> initGeolocation() async {
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
+    serviceEnabled = await location.serviceEnabled();
+
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -30,13 +27,18 @@ class LocationHandler {
         return;
       }
     }
+    await refreshLocation();
+  }
+
+  refreshLocation() async {
     _locationData = await location.getLocation();
+    serviceEnabled = await location.serviceEnabled();
   }
 
   Future<LatLng> getCurrentLocation() async {
-    await initGeolocation();
     return Future(() async {
       while (hasNoLocationAndPermissionGranted()) {
+        await location.serviceEnabled() && await refreshLocation();
         await Future.delayed(const Duration(milliseconds: 100));
       }
       return LatLng(_locationData?.latitude ?? 37.42796133580664,

@@ -13,6 +13,27 @@ class DistrictsComboBox extends StatefulWidget {
 class _DistrictsComboBoxState extends State<DistrictsComboBox> {
   List<DropdownMenuItem<District>>? items;
 
+  setItems(List<District> itemsToSet) {
+    items ??= itemsToSet
+        .map(
+          (District district) => DropdownMenuItem<District>(
+            value: district,
+            child: Text(district.name),
+          ),
+        )
+        .toList();
+
+    if (items != null && items!.where((item) => item.value == null).isEmpty) {
+      items!.insert(
+        0,
+        const DropdownMenuItem(
+          value: null,
+          child: Text('Selecione um Bairro'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -23,13 +44,7 @@ class _DistrictsComboBoxState extends State<DistrictsComboBox> {
               child: CircularProgressIndicator(),
             );
           }
-          items ??= snapshot.data!
-              .map((District district) => DropdownMenuItem<District>(
-                    value: district,
-                    child: Text(district.name),
-                  ))
-              .toList();
-          FilterHandler.selectedDistrict ??= items?[0].value;
+          setItems(snapshot.data!);
           return DropdownButton<District>(
             items: items,
             onChanged: (District? item) {
@@ -39,7 +54,6 @@ class _DistrictsComboBoxState extends State<DistrictsComboBox> {
             },
             value: FilterHandler.selectedDistrict,
             isExpanded: true,
-            hint: const Text('Selecione um Bairro'),
           );
         });
   }

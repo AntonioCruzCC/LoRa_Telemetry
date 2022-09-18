@@ -22,13 +22,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'LoRa Telemetry',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(
+          color: Colors.blue,
+          foregroundColor: Colors.white,
+        ),
+        useMaterial3: true,
         bottomSheetTheme: const BottomSheetThemeData(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(50),
+              top: Radius.circular(30),
             ),
           ),
           clipBehavior: Clip.antiAliasWithSaveLayer,
