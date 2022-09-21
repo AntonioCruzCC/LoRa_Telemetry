@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lora_telemetry/controllers/power_meter.dart';
 
 class PowerMeterDetails extends StatefulWidget {
@@ -14,8 +15,19 @@ class _PowerMeterDetailsState extends State<PowerMeterDetails> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Medidor: ${widget.powerMeter.id}'),
-      content: Container(
-        child: const Text('Informações do Medidor'),
+      content: SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height * 0.1,
+        child: ListView(
+          children: [
+            ListTile(
+              leading: const Text('Data Próximo Faturamento:'),
+              trailing: Text(
+                DateFormat('dd/MM/yyyy').format(widget.powerMeter.nextBilling!),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

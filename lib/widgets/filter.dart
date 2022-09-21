@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lora_telemetry/widgets/districts_combobox.dart';
+import 'package:lora_telemetry/widgets/limit_slider.dart';
 
 class Filter extends StatefulWidget {
   const Filter({Key? key}) : super(key: key);
@@ -9,6 +10,19 @@ class Filter extends StatefulWidget {
 }
 
 class _FilterState extends State<Filter> {
+  //add spaces between the filters
+  List<Widget> addSpacers(List<Widget> list) {
+    for (int i = 1; i <= (list.length - 1); i += 2) {
+      list.insert(
+        i,
+        const SizedBox(
+          height: 20,
+        ),
+      );
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -49,9 +63,12 @@ class _FilterState extends State<Filter> {
             Expanded(
               flex: 10,
               child: Column(
-                children: const [
-                  DistrictsComboBox(),
-                ],
+                children: addSpacers(
+                  [
+                    const DistrictsComboBox(),
+                    const LimitSlider(),
+                  ],
+                ),
               ),
             )
           ],
