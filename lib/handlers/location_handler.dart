@@ -32,13 +32,13 @@ class LocationHandler {
 
   refreshLocation() async {
     _locationData = await location.getLocation();
-    serviceEnabled = await location.serviceEnabled();
   }
 
   Future<LatLng> getCurrentLocation() async {
     return Future(() async {
       while (hasNoLocationAndPermissionGranted()) {
-        await location.serviceEnabled() && await refreshLocation();
+        serviceEnabled = await location.serviceEnabled();
+        (serviceEnabled ?? false) && await refreshLocation();
         await Future.delayed(const Duration(milliseconds: 100));
       }
       return LatLng(_locationData?.latitude ?? 37.42796133580664,

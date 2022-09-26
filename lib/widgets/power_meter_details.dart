@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lora_telemetry/controllers/power_meter.dart';
+import 'package:lora_telemetry/widgets/instant_values.dart';
 
 class PowerMeterDetails extends StatefulWidget {
   final PowerMeter powerMeter;
@@ -11,20 +12,38 @@ class PowerMeterDetails extends StatefulWidget {
 }
 
 class _PowerMeterDetailsState extends State<PowerMeterDetails> {
+  getFormattedDate(DateTime? dateTime) {
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy hh:mm:ss');
+    return (dateTime != null
+        ? dateFormat.format(dateTime)
+        : 'Nunca atualizado!');
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Medidor: ${widget.powerMeter.id}'),
-      content: SizedBox(
-        width: double.maxFinite,
-        height: MediaQuery.of(context).size.height * 0.1,
-        child: ListView(
+      title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              leading: const Text('Data Próximo Faturamento:'),
-              trailing: Text(
-                DateFormat('dd/MM/yyyy').format(widget.powerMeter.nextBilling!),
-              ),
+            Text(
+              'Medidor: ${widget.powerMeter.id}',
+              maxLines: 1,
+            ),
+            Text(
+              'Última atualização:${getFormattedDate(widget.powerMeter.lastUpdate)}',
+              style: const TextStyle(fontSize: 12),
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            InstantValues(
+              powerMeter: widget.powerMeter,
             ),
           ],
         ),
