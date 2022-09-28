@@ -4,6 +4,7 @@ class FilterHandler {
   static final FilterHandler _filterSingleton = FilterHandler._internal();
 
   static District? selectedDistrict;
+  static int? limitOfRecords;
 
   factory FilterHandler() {
     return _filterSingleton;

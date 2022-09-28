@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+import 'package:lora_telemetry/controllers/power_meter.dart';
 import 'package:lora_telemetry/handlers/firestore_handler.dart';
 import 'package:lora_telemetry/handlers/location_handler.dart';
 import 'package:lora_telemetry/widgets/filter.dart';
+
+import '../widgets/power_meter_details.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -33,9 +35,25 @@ class _MapPageState extends State<MapPage> {
   }
 
   setMarkers(BuildContext context) async {
-    Set<Marker> markersToSet = await _firestoreHandler.getFilteredMeters(
+    List<PowerMeter> powerMeters = await _firestoreHandler.getFilteredMeters(
       context,
     );
+
+    Set<Marker> markersToSet = powerMeters
+        .map(
+          (PowerMeter meter) => Marker(
+            markerId: MarkerId(meter.id),
+            position: meter.geolocation,
+            onTap: () => showDialog<String>(
+              context: context,
+              builder: (context) => PowerMeterDetails(
+                meter,
+              ),
+            ),
+          ),
+        )
+        .toSet();
+
     setState(() {
       markers = markersToSet;
     });

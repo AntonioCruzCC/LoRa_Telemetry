@@ -28,7 +28,7 @@ class _DistrictsComboBoxState extends State<DistrictsComboBox> {
         0,
         const DropdownMenuItem(
           value: null,
-          child: Text('Selecione um Bairro'),
+          child: Text('Todos'),
         ),
       );
     }
