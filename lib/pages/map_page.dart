@@ -34,34 +34,39 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  setMarkers(BuildContext context) async {
-    List<PowerMeter> powerMeters = await _firestoreHandler.getFilteredMeters(
-      context,
-    );
+  setMarkers() async {
+    Stream<List<PowerMeter>> filteredMetersStream =
+        _firestoreHandler.getFilteredMeters();
 
-    Set<Marker> markersToSet = powerMeters
-        .map(
-          (PowerMeter meter) => Marker(
-            markerId: MarkerId(meter.id),
-            position: meter.geolocation,
-            onTap: () => showDialog<String>(
-              context: context,
-              builder: (context) => PowerMeterDetails(
-                meter,
+    await for (List<PowerMeter> powerMeters in filteredMetersStream) {
+      Set<Marker> markersToSet = powerMeters
+          .map(
+            (PowerMeter meter) => Marker(
+              markerId: MarkerId(meter.id),
+              position: meter.geolocation,
+              onTap: () => showDialog<String>(
+                context: context,
+                builder: (context) => PowerMeterDetails(
+                  meter,
+                ),
               ),
             ),
-          ),
-        )
-        .toSet();
+          )
+          .toSet();
+      setState(() {
+        markers = markersToSet;
+      });
+    }
+  }
 
-    setState(() {
-      markers = markersToSet;
-    });
+  void _onMapCreated(GoogleMapController controller) async {
+    _controller.complete(controller);
+    controller.setMapStyle(await _getMapStyle());
+    await setMarkers();
   }
 
   @override
   Widget build(BuildContext context) {
-    setMarkers(context);
     return Scaffold(
         appBar: AppBar(
           title: const Text("LoRa Telemetry"),
@@ -72,7 +77,7 @@ class _MapPageState extends State<MapPage> {
               context: context,
               builder: ((BuildContext context) => const Filter()),
             ).then(
-              (value) => setMarkers(context),
+              (value) => setMarkers(),
             );
           },
           child: const Icon(Icons.filter_alt),
@@ -86,18 +91,21 @@ class _MapPageState extends State<MapPage> {
                 myLocationEnabled: true,
                 mapToolbarEnabled: false,
                 zoomControlsEnabled: false,
-                onMapCreated: (GoogleMapController controller) async {
-                  _controller.complete(controller);
-                  controller.setMapStyle(await _getMapStyle());
-                },
+                onMapCreated: _onMapCreated,
                 markers: markers,
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text(
+                  'Ative a localização do seu dispositivo e reinicie o aplicativo!',
+                ),
               );
             } else {
               return Center(
                 child: LocationHandler().serviceEnabled != null &&
                         !LocationHandler().serviceEnabled!
                     ? const Text(
-                        'Ative a localização do seu dispositivo!',
+                        'Ative a localização do seu dispositivo e reinicie o aplicativo!',
                       )
                     : const CircularProgressIndicator(),
               );

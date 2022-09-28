@@ -32,14 +32,14 @@ class FirestoreHandler {
         toFirestore: (district, _) => district.toJson());
   }
 
-
-  Future<List<PowerMeter>> getFilteredMeters(BuildContext context) async {
-    QuerySnapshot<PowerMeter> querySnapshot =
-        await powerMetersRef.getFilters().get();
-    return querySnapshot.docs
-        .map((QueryDocumentSnapshot<PowerMeter> powerMeterDoc) =>
-            powerMeterDoc.data())
-        .toList();
+  Stream<List<PowerMeter>> getFilteredMeters() {
+    return powerMetersRef.getFilters().snapshots().map<List<PowerMeter>>(
+          (snapshots) => snapshots.docs
+              .map(
+                (powerMeterRef) => powerMeterRef.data(),
+              )
+              .toList(),
+        );
   }
 
   Future<List<District>> getAllDistricts() async {
