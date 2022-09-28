@@ -32,6 +32,7 @@ class FirestoreHandler {
         toFirestore: (district, _) => district.toJson());
   }
 
+
   Future<List<PowerMeter>> getFilteredMeters(BuildContext context) async {
     QuerySnapshot<PowerMeter> querySnapshot =
         await powerMetersRef.getFilters().get();

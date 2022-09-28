@@ -24,12 +24,12 @@ class MyApp extends StatelessWidget {
       title: 'LoRa Telemetry',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.blue,
         appBarTheme: const AppBarTheme(
           color: Colors.blue,
           foregroundColor: Colors.white,
         ),
-        useMaterial3: true,
         bottomSheetTheme: const BottomSheetThemeData(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -39,6 +39,9 @@ class MyApp extends StatelessWidget {
           ),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           elevation: 50,
+        ),
+        sliderTheme: SliderThemeData(
+          overlayShape: SliderComponentShape.noThumb,
         ),
       ),
       home: const Scaffold(
