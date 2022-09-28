@@ -36,9 +36,11 @@ class LocationHandler {
 
   Future<LatLng> getCurrentLocation() async {
     return Future(() async {
-      while (hasNoLocationAndPermissionGranted()) {
-        serviceEnabled = await location.serviceEnabled();
-        (serviceEnabled ?? false) && await refreshLocation();
+      while (_locationData == null) {
+        if (permissionDenied()) {
+          throw Exception(
+              'Ative a Lozalização do Seu Dispositivo e Reinicie o App!');
+        }
         await Future.delayed(const Duration(milliseconds: 100));
       }
       return LatLng(_locationData?.latitude ?? 37.42796133580664,
@@ -46,9 +48,8 @@ class LocationHandler {
     });
   }
 
-  bool hasNoLocationAndPermissionGranted() {
-    return _locationData == null &&
-        ([PermissionStatus.granted, PermissionStatus.grantedLimited]
-            .contains(_permissionGranted ?? PermissionStatus.granted));
+  bool permissionDenied() {
+    return ([PermissionStatus.denied, PermissionStatus.deniedForever]
+        .contains(_permissionGranted ?? PermissionStatus.granted));
   }
 }
