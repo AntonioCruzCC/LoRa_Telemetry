@@ -43,7 +43,8 @@ class PowerMeter {
     return {
       'Geolocation': geolocation,
       'District': districtRef,
-      'LastUpdate': lastUpdate
+      'LastUpdate': lastUpdate,
+      'InstantValues': instantValues?.toJson().toString()
     };
   }
 }

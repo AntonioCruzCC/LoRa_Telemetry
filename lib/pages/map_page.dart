@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lora_telemetry/controllers/power_meter.dart';
+import 'package:lora_telemetry/handlers/file_handler.dart';
 import 'package:lora_telemetry/handlers/firestore_handler.dart';
 import 'package:lora_telemetry/handlers/location_handler.dart';
 import 'package:lora_telemetry/widgets/filter.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
 import '../widgets/power_meter_details.dart';
 
@@ -20,6 +23,7 @@ class _MapPageState extends State<MapPage> {
   final Completer<GoogleMapController> _controller = Completer();
   final LocationHandler _locationHandler = LocationHandler();
   final FirestoreHandler _firestoreHandler = FirestoreHandler();
+  final FileHandler _fileHandler = FileHandler();
   Set<Marker> markers = {};
 
   Future<String> _getMapStyle() async {
@@ -59,6 +63,27 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+  exportMarkersAsJson() async {
+    Stream<List<PowerMeter>> filteredMetersStream =
+        _firestoreHandler.getFilteredMeters();
+    await for (List<PowerMeter> powerMeters in filteredMetersStream) {
+      List<String> metersJson = powerMeters
+          .map((PowerMeter meter) => meter.toJson().toString())
+          .toList();
+      String allMetersJson = '{[';
+      for (int i = 0; i < metersJson.length; i++) {
+        if (i != metersJson.length - 1) {
+          allMetersJson += '${metersJson[i]},';
+        } else {
+          allMetersJson += metersJson[i];
+        }
+      }
+      allMetersJson += ']}';
+      File file = await _fileHandler.writeFile(allMetersJson);
+      await OpenFile.open(file.path);
+    }
+  }
+
   void _onMapCreated(GoogleMapController controller) async {
     _controller.complete(controller);
     controller.setMapStyle(await _getMapStyle());
@@ -71,16 +96,30 @@ class _MapPageState extends State<MapPage> {
         appBar: AppBar(
           title: const Text("LoRa Telemetry"),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              builder: ((BuildContext context) => const Filter()),
-            ).then(
-              (value) => setMarkers(),
-            );
-          },
-          child: const Icon(Icons.filter_alt),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: ((BuildContext context) => const Filter()),
+                ).then(
+                  (value) => setMarkers(),
+                );
+              },
+              child: const Icon(Icons.filter_alt),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            FloatingActionButton(
+              onPressed: (() {
+                exportMarkersAsJson();
+              }),
+              child: const Icon(Icons.file_copy),
+            )
+          ],
         ),
         body: FutureBuilder<CameraPosition>(
           future: getCameraPosition(),
