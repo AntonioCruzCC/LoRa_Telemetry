@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:lora_telemetry/controllers/district.dart';
 import 'package:lora_telemetry/controllers/power_meter.dart';
 

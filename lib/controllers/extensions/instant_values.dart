@@ -31,4 +31,20 @@ class InstantValues {
     temp = (json['Temp'] ?? 0.0) as double;
     freq = (json['Freq'] ?? 0.0) as double;
   }
+
+  Map<String, Object?> toJson() {
+    return {
+      'VA': VA,
+      'VB': VB,
+      'VC': VC,
+      'IA': IA,
+      'IB': IB,
+      'IC': IC,
+      'WA': WA,
+      'WB': WB,
+      'WC': WC,
+      'temp': temp,
+      'freq': freq,
+    };
+  }
 }

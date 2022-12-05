@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lora_telemetry/firebase_options.dart';
+import 'package:lora_telemetry/handlers/file_handler.dart';
 import 'package:lora_telemetry/handlers/filter_handler.dart';
 import 'package:lora_telemetry/handlers/firestore_handler.dart';
 import 'package:lora_telemetry/handlers/location_handler.dart';
@@ -12,6 +13,7 @@ void main() async {
   FirestoreHandler();
   LocationHandler();
   FilterHandler();
+  FileHandler();
   runApp(const MyApp());
 }
 
