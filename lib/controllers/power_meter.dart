@@ -41,9 +41,8 @@ class PowerMeter {
 
   Map<String, Object?> toJson() {
     return {
-      'Geolocation': geolocation,
-      'District': districtRef,
-      'LastUpdate': lastUpdate,
+      'Geolocation': geolocation.toJson(),
+      'LastUpdate': '"$lastUpdate"',
       'InstantValues': instantValues?.toJson().toString()
     };
   }

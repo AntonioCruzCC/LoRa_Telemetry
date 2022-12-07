@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -70,18 +71,23 @@ class _MapPageState extends State<MapPage> {
       List<String> metersJson = powerMeters
           .map((PowerMeter meter) => meter.toJson().toString())
           .toList();
-      String allMetersJson = '{[';
-      for (int i = 0; i < metersJson.length; i++) {
-        if (i != metersJson.length - 1) {
-          allMetersJson += '${metersJson[i]},';
-        } else {
-          allMetersJson += metersJson[i];
-        }
-      }
-      allMetersJson += ']}';
+      String allMetersJson = '{${createJsonList('powerMeters', metersJson)}}';
       File file = await _fileHandler.writeFile(allMetersJson);
       await OpenFile.open(file.path);
     }
+  }
+
+  String createJsonList(String listName, List<String> contents) {
+    String jsonList = '"$listName": [';
+    for (int i = 0; i < contents.length; i++) {
+      if (i != contents.length - 1) {
+        jsonList += '${contents[i]},';
+      } else {
+        jsonList += contents[i];
+      }
+    }
+    jsonList += ']';
+    return jsonList;
   }
 
   void _onMapCreated(GoogleMapController controller) async {
